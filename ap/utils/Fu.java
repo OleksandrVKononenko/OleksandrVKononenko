@@ -2685,6 +2685,8 @@ public class Fu {
 		 
 	  } 
 	 
+	  
+	  // TODO  09.06.2021
 	 
 		public static ArrayList<File> getFilesInDirRecursively(File rootDirectory,String[] masks) 
 				throws IOException { 
@@ -4272,7 +4274,7 @@ public static String getFileAsStringSkipFirstRow(String path)
 		 
 		 try {
 			
-			 List<File> files = getFilesInDirRecursively(new File(path),new String[] {"java"});
+			 List<File> files = getFilesInDirRecursively(new File(path),new String[] {"*"});
 			
 			 gl.sfn("Файлов...%d",files.size());
 			 
@@ -4354,6 +4356,23 @@ public static String getFileAsStringSkipFirstRow(String path)
 	}
 	 
 	 public static void main(String[] args)  { 
+		 
+		 // test_recursive_files("D:\\bin\\ecl\\test\\");
+		 try {
+			 
+			getFilesInDirRecursively(new File("D:\\bin\\ecl\\"),new String[] {"java"}).forEach(a->{
+				 
+				 gl.smn(gl.sf("File...[%s]...Rows...[%5d]",
+						 
+						 a.getAbsolutePath(),
+						 Fu.get_list_from_file(a.getAbsolutePath()).size()));
+				 
+			 });
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		 
 		 		
 	  } 
 
