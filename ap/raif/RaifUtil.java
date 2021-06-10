@@ -47,12 +47,21 @@ public class RaifUtil {
         return Arrays.asList(get_str_array_from_file(path));
     }
 
+    public static String get_str_from_list_nl(List<String> items)
+    {
+        if(items.size() == EMPTY)
+            return null;
+
+            return String.join(System.lineSeparator(),items);
+    }
+
+
     public static String get_str_from_list(List<String> items)
     {
         if(items.size() == EMPTY)
             return null;
 
-            return String.join(" ",items);
+        return String.join(" ",items);
     }
 
     public static String[] get_str_array_from_file(String path)
@@ -322,57 +331,91 @@ public class RaifUtil {
                         word,source_dir,get_str_from_list(mask)));
             }
 
-            StringBuilder 	sb  = new StringBuilder();
-
-            Map<Integer,String> map = new LinkedHashMap<Integer,String>();
+            String  [] m_root_dir = {""};
 
             get_files_in_dir(new File(source_dir),mask).forEach(a->{
 
-                List<String> rows = get_list_from_file(a.getAbsolutePath());
+                List<String> source_file_data_rows = get_list_from_file(a.getAbsolutePath());
+
+                List<String> el = new ArrayList<String>();
 
 //				 gl.smn(gl.sf("File...[%s]...Rows...[%5d]",
 //						 a.getAbsolutePath(),
-//						 rows.size()));
+//						 source_file_data_rows.size()));
 //
                 // Find word.
 
+                // TODO 10.06.2021 Under CONSTRUCTION.
+
                 int row_num  = 1;
 
-                String 		m_file = sf("\n[%s] [%5d]\n\n",a,map.size());
+                String 		m_file = "";
 
-                sb.append(m_file);
+                // sb.append(m_file);
 
-                for(String s : rows)
+                boolean bl_find = false;
+
+                for(String s : source_file_data_rows)
                 {
                     if(s.contains(word))
                     {
-                        String 			m_find = sf("\t\t%5d  %s\n",row_num,s);
+                        bl_find = true;
 
-                        sb.append(m_find);
+                        String 			m_find = sf("\t\t%5d  %s",row_num,s);
+
+                        el.add(m_find);
                     }
 
-                    row_num++;
+                        row_num++;
                 }
 
-                if(verbose)
-                    sm(sb.toString());
+                    if(bl_find) {
 
 
+                        String m_local_root = BeforeAt(a.getAbsolutePath(),"\\");
 
-                if(save){to_file_append(m_file_log,sb.toString());}
+                        String m_local_file = AfterAt(a.getAbsolutePath(),"\\");
 
-                sb.setLength(EMPTY);
+                        //sm(sf("Root...[%s]...File...[%s]",m_local_root,m_local_file));
 
+                        String m_inject = "";
+
+                        if(m_root_dir[0].equalsIgnoreCase(m_local_root))
+                        {
+                            m_inject = m_local_file;
+                        }
+                        else
+                        {
+                            m_inject = sf("%s\n\n %s",m_local_root,m_local_file);
+
+                            m_root_dir[0] = m_local_root;
+                        }
+
+
+                        m_file = sf("\n%s [%d]",m_inject,el.size());
+
+                        el.add(EMPTY, m_file);
+
+                     }
+
+                    String m_text = get_str_from_list_nl(el);
+
+                    if(verbose && bl_find)
+                        sm(m_text);
+
+                    if(save && bl_find) {to_file_append(m_file_log,m_text);}
+
+                    bl_find = false;
+
+                    el.clear();
 
             });
 
-                sm("Done.");
-
-                return true;
+                    return true;
 
         } catch (IOException e) {
 
-            return false;
+                    return false;
         }
 }
 
@@ -380,7 +423,7 @@ public class RaifUtil {
 
         //find_of_tag("C:\\bin\\test\\OleksandrVKononenko\\ap\\","java"," main(",true,false);
 
-        find_of_tag("C:\\Users\\IUAD1GJO\\IdeaProjects\\rice-api-gateway-service\\","java,yml","clients",false,true);
+        find_of_tag("C:\\Users\\IUAD1GJO\\IdeaProjects\\rice-api-gateway-service\\","java,yml","clients",true,true);
 
     }
 
