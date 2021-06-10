@@ -1274,7 +1274,8 @@ public class Fu {
 			} 
 			  return false; 
 		} 
-	 
+	   	 
+
 	  public static boolean to_file(String fileName,String value,boolean append) 
 	  { 
 		 
@@ -1292,14 +1293,14 @@ public class Fu {
 		} 
 		  finally 
 		  { 
-			 // try { 
+			 try { 
 				  
-				//fw.flush(); 
+				fw.flush(); 
 				
-			//} catch (IOException e) { 
+			} catch (IOException e) { 
 		 
-			//	return false; 
-			//} 
+				return false; 
+			} 
 			 
 			  try { 
 				  
@@ -4355,26 +4356,79 @@ public static String getFileAsStringSkipFirstRow(String path)
 			}
 	}
 	 
-	 public static void main(String[] args)  { 
-		 
-		 // test_recursive_files("D:\\bin\\ecl\\test\\");
+	 public static boolean find_of_word(String source_dir,String[] mask,String word,boolean save)
+	 {
+
 		 try {
-			 
-			getFilesInDirRecursively(new File("D:\\bin\\ecl\\"),new String[] {"java"}).forEach(a->{
+		
+			 	String m_file_log = gl.sf("%s_log.txt",word.trim());
+			 	
+			 	
+			 	if(save)
+			 	{
+			 		Fu.to_file(m_file_log,gl.sf("Поиск ключа [%s] в директории [%s] по маске [%s]", 
+			 				word,source_dir,Su.get_str_from_list(Arrays.asList(mask))));
+			 	}
+
+			 	StringBuilder 	sb  = new StringBuilder();
+
+			 	Map<Integer,String> map = new LinkedHashMap<Integer,String>();
+				
+			 	getFilesInDirRecursively(new File(source_dir),mask).forEach(a->{
 				 
-				 gl.smn(gl.sf("File...[%s]...Rows...[%5d]",
-						 
-						 a.getAbsolutePath(),
-						 Fu.get_list_from_file(a.getAbsolutePath()).size()));
+				List<String> rows = Fu.get_list_from_file(a.getAbsolutePath()); 
+						
+//				 gl.smn(gl.sf("File...[%s]...Rows...[%5d]",
+//						 a.getAbsolutePath(),
+//						 rows.size()));
+//				 
+				 // Find word.
 				 
-			 });
+				 int row_num  = 1;
+				 
+				 String 		m_file = gl.sf("\n[%s] [%5d]\n\n",a,map.size());
+
+					sb.append(m_file);
+
+				 for(String s : rows)
+				 {
+					 if(s.contains(word))
+					 {
+							String 			m_find = gl.sf("\t\t%5d  %s\n",row_num,s);
+							 
+							sb.append(m_find);
+					 }
+					 
+					 row_num++;	
+				 }
+				 
+					gl.sm(sb.toString());
+
+					if(save){Fu.to_file_append(m_file_log,sb.toString());}
+					
+				 	sb.setLength(gl.E_EMPTY);
+				 	
+					   	
+				 });
+			
+			 					return true;
+			 					
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				
+								return false;
 		} 
 		 
 		 		
-	  } 
+
+	 }
+	 
+	 public static void main(String[] args)  { 
+		 
+		 // test_recursive_files("D:\\bin\\ecl\\test\\");
+		 
+		 find_of_word("d:\\bin\\ecl\\wsp\\Explorer\\",new String[] {"java"},"void ",true);
+		 
+	 } 
 
 	 
 } 
