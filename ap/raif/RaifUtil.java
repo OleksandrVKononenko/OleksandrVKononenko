@@ -6,6 +6,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+enum Tag {
+	
+	METHOD,
+	FIELD,
+	CLAZZ
+}
+
+
 public class RaifUtil {
 
     public static final int EMPTY   = 0;
@@ -423,10 +431,73 @@ public class RaifUtil {
 
         //find_of_tag("C:\\bin\\test\\OleksandrVKononenko\\ap\\","java"," main(",true,false);
 
-        find_of_tag("C:\\Users\\IUAD1GJO\\IdeaProjects\\rice-api-gateway-service\\","java,yml","clients",true,true);
+       // find_of_tag("C:\\Users\\IUAD1GJO\\IdeaProjects\\rice-api-gateway-service\\","java,yml","clients",true,true);
+
+    	String m_home =  "D:\\bin\\ecl\\wsp\\Explorer\\"; 
+    	
+    	String m_cloud = "D:\\bin\\test\\spring-cloud-gateway\\spring-cloud-gateway-server\\";
+
+        find_of_tag(m_cloud,"java,yml","ReactorHttpServer ",true,true);
 
     }
 
 
 
 }
+
+
+
+/*
+package org.springframework.cloud.gateway.test.support;
+
+import reactor.core.publisher.Mono;
+import reactor.netty.DisposableServer;
+import reactor.netty.http.server.HttpServer;
+
+public class ReactorTest {
+	
+	
+	public static void main(String[] args) {
+		
+				s1();
+	}
+	
+
+	public static void s0()
+	{
+		DisposableServer server =
+				HttpServer.create()
+				          .host("localhost") 
+				          .port(8080)        
+				          .bindNow();
+
+		server.onDispose()
+		      .block();
+	
+		
+	}
+	public static void s1()
+	{
+		DisposableServer server =
+				HttpServer.create()
+				.host("localhost") 
+		          .port(8080) 
+				          .route(routes ->
+				              routes.get("/hello",        
+				                        (request, response) -> response.sendString(Mono.just("Hello World!")))
+				                    .post("/echo",        
+				                        (request, response) -> response.send(request.receive().retain()))
+				                    .get("/path/{param}", 
+				                        (request, response) -> response.sendString(Mono.just(request.param("param"))))
+				                    .ws("/ws",            
+				                        (wsInbound, wsOutbound) -> wsOutbound.send(wsInbound.receive().retain())))
+				          .bindNow();
+
+		server.onDispose()
+		      .block();
+	}
+	
+
+}
+
+ */
